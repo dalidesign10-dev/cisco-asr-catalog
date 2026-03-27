@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="200" fill="url(#bg)"/>
+  <rect x="0" y="0" width="300" height="4" fill="#e74c3c"/>
+  <path d="M60,55 L240,55 L240,145 L60,145 Z M70,65 L100,65 L100,85 L70,85 Z M110,65 L140,65 L140,85 L110,85 Z M150,65 L180,65 L180,85 L150,85 Z M70,95 L230,95 L230,100 L70,100 Z M70,110 L230,110 L230,115 L70,115 Z" fill="none" stroke="#e74c3c" stroke-width="1.5" opacity="0.3"/>
+  <text x="150" y="170" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#c0392b">A9K-MPA-20X1GE</text>
+  <text x="150" y="188" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" fill="#94a3b8">Modular Port Adapter | ASR 9000</text>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="200" fill="url(#bg)"/>
+  <rect x="0" y="0" width="300" height="4" fill="#f39c12"/>
+  <path d="M20,60 L280,60 L280,140 L20,140 Z M30,70 L60,70 L60,100 L30,100 Z M70,70 L100,70 L100,100 L70,100 Z M110,70 L140,70 L140,100 L110,100 Z M30,110 L270,110 L270,130 L30,130 Z" fill="none" stroke="#f39c12" stroke-width="1.5" opacity="0.3"/>
+  <text x="150" y="170" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#d68910">ASR-920-12SZ-IM</text>
+  <text x="150" y="188" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" fill="#94a3b8">Router | ASR 920</text>
+</svg>

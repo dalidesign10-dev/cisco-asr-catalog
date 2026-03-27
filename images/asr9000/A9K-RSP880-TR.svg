@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="200" fill="url(#bg)"/>
+  <rect x="0" y="0" width="300" height="4" fill="#e74c3c"/>
+  <path d="M50,50 L250,50 L250,150 L50,150 Z M60,60 L90,60 L90,90 L60,90 Z M100,60 L200,60 L200,75 L100,75 Z M100,80 L180,80 L180,90 L100,90 Z M60,100 L240,100 L240,105 L60,105 Z M60,115 L240,115 L240,120 L60,120 Z" fill="none" stroke="#e74c3c" stroke-width="1.5" opacity="0.3"/>
+  <text x="150" y="170" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#c0392b">A9K-RSP880-TR</text>
+  <text x="150" y="188" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" fill="#94a3b8">Route Switch Processor | ASR 9000</text>
+</svg>

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "catalog",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["http-server", "E:/TEST CLAUDE/cisco-asr-catalog", "-p", "8080", "-c-1"],
+      "port": 8080
+    }
+  ]
+}

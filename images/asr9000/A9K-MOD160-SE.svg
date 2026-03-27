@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="200" fill="url(#bg)"/>
+  <rect x="0" y="0" width="300" height="4" fill="#e74c3c"/>
+  <path d="M40,50 L260,50 L260,150 L40,150 Z M50,60 L80,60 L80,80 L50,80 Z M90,60 L120,60 L120,80 L90,80 Z M130,60 L160,60 L160,80 L130,80 Z M50,90 L250,90 L250,95 L50,95 Z M50,105 L250,105 L250,110 L50,110 Z M50,120 L250,120 L250,125 L50,125 Z" fill="none" stroke="#e74c3c" stroke-width="1.5" opacity="0.3"/>
+  <text x="150" y="170" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#c0392b">A9K-MOD160-SE</text>
+  <text x="150" y="188" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" fill="#94a3b8">Line Card | ASR 9000</text>
+</svg>

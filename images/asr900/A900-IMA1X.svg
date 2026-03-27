@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="200" fill="url(#bg)"/>
+  <rect x="0" y="0" width="300" height="4" fill="#27ae60"/>
+  <path d="M50,55 L250,55 L250,145 L50,145 Z M60,65 L80,65 L80,85 L60,85 Z M85,65 L105,65 L105,85 L85,85 Z M110,65 L130,65 L130,85 L110,85 Z M135,65 L155,65 L155,85 L135,85 Z M160,65 L180,65 L180,85 L160,85 Z M185,65 L205,65 L205,85 L185,85 Z M210,65 L240,65 L240,85 L210,85 Z M60,100 L240,100 L240,135 L60,135 Z" fill="none" stroke="#27ae60" stroke-width="1.5" opacity="0.3"/>
+  <text x="150" y="170" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="700" fill="#1e8449">A900-IMA1X</text>
+  <text x="150" y="188" text-anchor="middle" font-family="Arial,sans-serif" font-size="10" fill="#94a3b8">Interface Module | ASR 900</text>
+</svg>

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cisco ASR Modules Catalog - Interactive Browser</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#049fd9;--dark:#1b2a4a;--darker:#0f1b33;--accent:#00bceb;--bg:#f0f4f8;--card:#fff;--text:#2c3e50;--muted:#7f8c8d;--border:#dde4eb;--shadow:0 2px 12px rgba(0,0,0,.08);--radius:10px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+header{background:linear-gradient(135deg,var(--darker),var(--dark));color:#fff;padding:0;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.3)}
+.header-top{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;flex-wrap:wrap;gap:12px}
+.logo{display:flex;align-items:center;gap:12px}
+.logo svg{width:36px;height:36px;fill:var(--accent)}
+.logo h1{font-size:1.4rem;font-weight:700;letter-spacing:-.5px}
+.logo span{color:var(--accent)}
+.stats{display:flex;gap:20px;font-size:.85rem;opacity:.85}
+.stats .stat{text-align:center}
+.stats .stat-num{font-size:1.3rem;font-weight:700;color:var(--accent);display:block}
+.controls{background:rgba(255,255,255,.06);padding:12px 32px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.search-box{flex:1;min-width:250px;position:relative}
+.search-box input{width:100%;padding:10px 16px 10px 40px;border:2px solid rgba(255,255,255,.15);border-radius:8px;background:rgba(255,255,255,.1);color:#fff;font-size:.95rem;outline:none;transition:.2s}
+.search-box input::placeholder{color:rgba(255,255,255,.5)}
+.search-box input:focus{border-color:var(--accent);background:rgba(255,255,255,.15)}
+.search-box svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;fill:rgba(255,255,255,.5)}
+select{padding:10px 14px;border:2px solid rgba(255,255,255,.15);border-radius:8px;background:rgba(255,255,255,.1);color:#fff;font-size:.9rem;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23fff' fill='none' stroke-width='2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+select:focus{border-color:var(--accent)}
+select option{background:var(--dark);color:#fff}
+.view-toggle{display:flex;gap:4px;background:rgba(255,255,255,.1);border-radius:8px;padding:3px}
+.view-btn{padding:7px 12px;border:none;background:transparent;color:rgba(255,255,255,.6);cursor:pointer;border-radius:6px;display:flex;align-items:center;gap:4px;font-size:.85rem;transition:.2s}
+.view-btn.active{background:var(--accent);color:#fff}
+.view-btn svg{width:16px;height:16px;fill:currentColor}
+.filter-pills{padding:6px 32px 12px;display:flex;gap:8px;flex-wrap:wrap}
+.pill{padding:6px 16px;border-radius:20px;border:1.5px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.75);font-size:.82rem;cursor:pointer;transition:.2s;font-weight:500}
+.pill:hover{border-color:var(--accent);color:#fff}
+.pill.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.pill .count{background:rgba(255,255,255,.2);padding:1px 7px;border-radius:10px;margin-left:6px;font-size:.75rem}
+.pill.active .count{background:rgba(255,255,255,.3)}
+main{max-width:1400px;margin:0 auto;padding:24px}
+.results-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-size:.9rem;color:var(--muted)}
+.results-bar strong{color:var(--text)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+.card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;transition:.25s;cursor:pointer;position:relative}
+.card:hover{box-shadow:0 8px 30px rgba(0,0,0,.12);transform:translateY(-2px);border-color:var(--accent)}
+.card-img{height:140px;background:#f8fafc;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--border);overflow:hidden;position:relative}
+.card-img img{max-height:120px;max-width:90%;object-fit:contain}
+.card-img .series-badge{position:absolute;top:8px;left:8px;padding:3px 10px;border-radius:4px;font-size:.7rem;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.5px}
+.badge-9000{background:#e74c3c}
+.badge-1000{background:#3498db}
+.badge-900{background:#27ae60}
+.badge-920{background:#f39c12}
+.card-body{padding:16px}
+.card-pn{font-size:1.05rem;font-weight:700;color:var(--dark);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card-cat{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.7rem;font-weight:600;background:#edf2f7;color:var(--muted)}
+.card-desc{font-size:.88rem;color:#555;margin:8px 0;line-height:1.4}
+.card-specs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.spec-tag{padding:3px 8px;border-radius:4px;font-size:.75rem;background:#eef5fd;color:#2980b9;border:1px solid #d6eaf8}
+.card-footer{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-top:1px solid var(--border);background:#fafbfc}
+.card-price{font-size:.85rem;font-weight:600;color:#27ae60}
+.card-link{font-size:.8rem;color:var(--primary);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:4px}
+.card-link:hover{text-decoration:underline}
+.table-view{display:none}
+.table-view.active{display:block}
+.grid.active{display:grid}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+th{background:var(--dark);color:#fff;padding:12px 16px;text-align:left;font-size:.82rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;user-select:none;white-space:nowrap}
+th:hover{background:#243656}
+th .sort-icon{margin-left:4px;opacity:.5;font-size:.7rem}
+th.sorted .sort-icon{opacity:1}
+td{padding:10px 16px;border-bottom:1px solid var(--border);font-size:.88rem;vertical-align:middle}
+tr:hover td{background:#f0f7ff}
+td img{width:50px;height:35px;object-fit:contain;border-radius:4px}
+.td-pn{font-weight:700;color:var(--dark)}
+.td-link{color:var(--primary);text-decoration:none;font-size:.82rem}
+.td-link:hover{text-decoration:underline}
+.no-results{text-align:center;padding:60px 20px;color:var(--muted)}
+.no-results svg{width:64px;height:64px;fill:var(--border);margin-bottom:16px}
+.no-results h3{margin-bottom:8px;color:var(--text)}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;justify-content:center;align-items:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:14px;max-width:700px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-header{display:flex;justify-content:space-between;align-items:flex-start;padding:24px 24px 0}
+.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:#f0f0f0;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0}
+.modal-close:hover{background:#e0e0e0}
+.modal-img{text-align:center;padding:20px;background:#f8fafc;margin:16px 24px;border-radius:10px}
+.modal-img img{max-height:200px;max-width:100%;object-fit:contain}
+.modal-body{padding:0 24px 24px}
+.modal-body h2{font-size:1.3rem;color:var(--dark);margin-bottom:4px}
+.modal-body .modal-series{color:var(--primary);font-weight:600;margin-bottom:16px;display:block}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.detail-item{padding:12px;background:#f8fafc;border-radius:8px;border:1px solid var(--border)}
+.detail-item label{display:block;font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;font-weight:600}
+.detail-item span{font-size:.95rem;font-weight:600;color:var(--text)}
+.modal-specs{margin:16px 0}
+.modal-specs h4{font-size:.85rem;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+.modal-specs ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px}
+.modal-specs li{padding:5px 12px;background:#eef5fd;color:#2980b9;border-radius:6px;font-size:.85rem;border:1px solid #d6eaf8}
+.modal-actions{display:flex;gap:12px;margin-top:20px}
+.btn{padding:10px 20px;border-radius:8px;font-weight:600;font-size:.9rem;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:.2s;border:none}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:#0380b0}
+.btn-outline{background:#fff;color:var(--primary);border:2px solid var(--primary)}
+.btn-outline:hover{background:#f0f7ff}
+.compare-bar{position:fixed;bottom:0;left:0;right:0;background:var(--dark);color:#fff;padding:12px 32px;display:none;align-items:center;justify-content:space-between;z-index:150;box-shadow:0 -4px 20px rgba(0,0,0,.3)}
+.compare-bar.show{display:flex}
+.compare-items{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.compare-chip{padding:4px 12px;background:rgba(255,255,255,.15);border-radius:20px;font-size:.82rem;display:flex;align-items:center;gap:6px}
+.compare-chip button{background:none;border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:1rem}
+.compare-btn{padding:8px 20px;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:.9rem}
+.compare-modal{max-width:95vw;width:auto;min-width:600px}
+.compare-table{width:100%;border-collapse:collapse;margin:16px 0}
+.compare-table th{background:var(--dark);color:#fff;padding:10px;font-size:.8rem;text-align:center;min-width:150px}
+.compare-table td{padding:10px;border:1px solid var(--border);text-align:center;font-size:.85rem;vertical-align:top}
+.compare-table tr:nth-child(even) td{background:#f8fafc}
+.compare-table .row-label{background:#f0f4f8;font-weight:600;text-align:left;color:var(--dark);min-width:120px}
+@media(max-width:768px){
+  .header-top{padding:12px 16px}.controls{padding:10px 16px}.filter-pills{padding:6px 16px 10px}
+  main{padding:16px}.grid{grid-template-columns:1fr}.detail-grid{grid-template-columns:1fr}
+  .stats{display:none}.compare-modal{min-width:auto}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="logo">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      <h1>Cisco <span>ASR</span> Catalog</h1>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="stat-num" id="totalCount">0</span>Products</div>
+      <div class="stat"><span class="stat-num" id="seriesCount">0</span>Series</div>
+      <div class="stat"><span class="stat-num" id="categoryCount">0</span>Categories</div>
+    </div>
+  </div>
+  <div class="controls">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="currentColor" fill="none" stroke-width="2"/></svg>
+      <input type="text" id="search" placeholder="Search by part number, description, specs...">
+    </div>
+    <select id="seriesFilter"><option value="">All Series</option></select>
+    <select id="categoryFilter"><option value="">All Categories</option></select>
+    <select id="sortBy">
+      <option value="partNumber">Sort: Part Number</option>
+      <option value="series">Sort: Series</option>
+      <option value="category">Sort: Category</option>
+      <option value="formFactor">Sort: Form Factor</option>
+    </select>
+    <div class="view-toggle">
+      <button class="view-btn active" id="gridBtn" onclick="setView('grid')">
+        <svg viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg>
+      </button>
+      <button class="view-btn" id="tableBtn" onclick="setView('table')">
+        <svg viewBox="0 0 24 24"><path d="M3 3h18v4H3zM3 10h18v4H3zM3 17h18v4H3z"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="filter-pills" id="pills"></div>
+</header>
+
+<main>
+  <div class="results-bar">
+    <span>Showing <strong id="resultCount">0</strong> products</span>
+    <span id="compareHint" style="color:var(--accent);font-weight:500;display:none">Click cards to compare (max 4)</span>
+  </div>
+  <div class="grid active" id="gridView"></div>
+  <div class="table-view" id="tableView">
+    <table>
+      <thead>
+        <tr>
+          <th onclick="sortTable('image')">Image</th>
+          <th onclick="sortTable('partNumber')">Part Number <span class="sort-icon">&#9650;</span></th>
+          <th onclick="sortTable('series')">Series <span class="sort-icon">&#9650;</span></th>
+          <th onclick="sortTable('category')">Category <span class="sort-icon">&#9650;</span></th>
+          <th onclick="sortTable('description')">Description <span class="sort-icon">&#9650;</span></th>
+          <th onclick="sortTable('specs')">Specs <span class="sort-icon">&#9650;</span></th>
+          <th onclick="sortTable('formFactor')">Form Factor <span class="sort-icon">&#9650;</span></th>
+          <th onclick="sortTable('pricing')">Pricing <span class="sort-icon">&#9650;</span></th>
+          <th>Link</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+  <div class="no-results" id="noResults" style="display:none">
+    <svg viewBox="0 0 24 24"><path d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>
+    <h3>No products found</h3>
+    <p>Try adjusting your search or filters</p>
+  </div>
+</main>
+
+<div class="compare-bar" id="compareBar">
+  <div class="compare-items" id="compareItems"></div>
+  <div style="display:flex;gap:8px">
+    <button class="compare-btn" onclick="showCompare()">Compare Selected</button>
+    <button class="compare-btn" style="background:rgba(255,255,255,.15)" onclick="clearCompare()">Clear</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal"></div>
+</div>
+
+<div class="modal-overlay" id="compareOverlay" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="modal compare-modal" id="compareModal"></div>
+</div>
+
+<script>
+let products=[], filtered=[], compareList=[], currentView='grid';
+const badgeClass={'ASR 9000':'badge-9000','ASR 1000':'badge-1000','ASR 900':'badge-900','ASR 920':'badge-920'};
+
+fetch('data/products.json').then(r=>r.json()).then(data=>{
+  products=data;
+  initFilters();
+  applyFilters();
+});
+
+function initFilters(){
+  const series=[...new Set(products.map(p=>p.series))].sort();
+  const cats=[...new Set(products.map(p=>p.category))].sort();
+  const sf=document.getElementById('seriesFilter');
+  const cf=document.getElementById('categoryFilter');
+  series.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;sf.appendChild(o)});
+  cats.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;cf.appendChild(o)});
+  document.getElementById('totalCount').textContent=products.length;
+  document.getElementById('seriesCount').textContent=series.length;
+  document.getElementById('categoryCount').textContent=cats.length;
+  buildPills(series);
+}
+
+function buildPills(series){
+  const el=document.getElementById('pills');
+  let html='<button class="pill active" data-series="">All <span class="count">'+products.length+'</span></button>';
+  series.forEach(s=>{
+    const count=products.filter(p=>p.series===s).length;
+    html+='<button class="pill" data-series="'+s+'">'+s+' <span class="count">'+count+'</span></button>';
+  });
+  el.innerHTML=html;
+  el.querySelectorAll('.pill').forEach(p=>p.addEventListener('click',function(){
+    el.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('seriesFilter').value=this.dataset.series;
+    applyFilters();
+  }));
+}
+
+function applyFilters(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const series=document.getElementById('seriesFilter').value;
+  const cat=document.getElementById('categoryFilter').value;
+  const sort=document.getElementById('sortBy').value;
+  filtered=products.filter(p=>{
+    if(series&&p.series!==series)return false;
+    if(cat&&p.category!==cat)return false;
+    if(q){
+      const hay=(p.partNumber+' '+p.description+' '+p.specs+' '+p.category+' '+p.series+' '+p.compatibility).toLowerCase();
+      if(!hay.includes(q))return false;
+    }
+    return true;
+  });
+  filtered.sort((a,b)=>(a[sort]||'').localeCompare(b[sort]||''));
+  document.getElementById('resultCount').textContent=filtered.length;
+  document.getElementById('noResults').style.display=filtered.length?'none':'block';
+  renderGrid();
+  renderTable();
+}
+
+function renderGrid(){
+  const el=document.getElementById('gridView');
+  if(!filtered.length){el.innerHTML='';return;}
+  el.innerHTML=filtered.map((p,i)=>`
+    <div class="card" onclick="openModal(${i})" data-pn="${p.partNumber}">
+      <div class="card-img">
+        <span class="series-badge ${badgeClass[p.series]||''}">${p.series}</span>
+        <img src="${p.image}" alt="${p.partNumber}" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22><rect fill=%22%23f0f4f8%22 width=%22120%22 height=%22120%22/><text x=%2260%22 y=%2265%22 text-anchor=%22middle%22 fill=%22%23aaa%22 font-size=%2212%22>${p.partNumber}</text></svg>'">
+      </div>
+      <div class="card-body">
+        <div class="card-pn">${p.partNumber} <span class="card-cat">${p.category}</span></div>
+        <div class="card-desc">${p.description}</div>
+        <div class="card-specs">${p.specs.split(';').slice(0,3).map(s=>'<span class="spec-tag">'+s.trim()+'</span>').join('')}</div>
+      </div>
+      <div class="card-footer">
+        <span class="card-price">${p.pricing}</span>
+        <a class="card-link" href="${p.url}" target="_blank" onclick="event.stopPropagation()">View on router-switch.com &rarr;</a>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderTable(){
+  const el=document.getElementById('tableBody');
+  el.innerHTML=filtered.map((p,i)=>`
+    <tr onclick="openModal(${i})" style="cursor:pointer">
+      <td><img src="${p.image}" alt="${p.partNumber}" onerror="this.style.display='none'"></td>
+      <td class="td-pn">${p.partNumber}</td>
+      <td>${p.series}</td>
+      <td>${p.category}</td>
+      <td>${p.description}</td>
+      <td style="font-size:.82rem">${p.specs}</td>
+      <td>${p.formFactor}</td>
+      <td style="color:#27ae60;font-weight:600">${p.pricing}</td>
+      <td><a class="td-link" href="${p.url}" target="_blank" onclick="event.stopPropagation()">View</a></td>
+    </tr>
+  `).join('');
+}
+
+function setView(v){
+  currentView=v;
+  document.getElementById('gridView').classList.toggle('active',v==='grid');
+  document.getElementById('tableView').classList.toggle('active',v==='table');
+  document.getElementById('gridBtn').classList.toggle('active',v==='grid');
+  document.getElementById('tableBtn').classList.toggle('active',v==='table');
+}
+
+function openModal(idx){
+  const p=filtered[idx];
+  const inCompare=compareList.some(c=>c.partNumber===p.partNumber);
+  document.getElementById('modal').innerHTML=`
+    <div class="modal-header">
+      <div>
+        <h2>${p.partNumber}</h2>
+        <span class="modal-series">${p.series} &mdash; ${p.category}</span>
+      </div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-img"><img src="${p.image}" alt="${p.partNumber}" onerror="this.parentElement.innerHTML='<div style=padding:40px;color:#aaa>No image available</div>'"></div>
+    <div class="modal-body">
+      <p style="color:#555;line-height:1.5;margin-bottom:12px">${p.description}</p>
+      <div class="detail-grid">
+        <div class="detail-item"><label>Form Factor</label><span>${p.formFactor}</span></div>
+        <div class="detail-item"><label>Pricing</label><span style="color:#27ae60">${p.pricing}</span></div>
+        <div class="detail-item"><label>Compatibility</label><span>${p.compatibility}</span></div>
+        <div class="detail-item"><label>Series</label><span>${p.series}</span></div>
+      </div>
+      <div class="modal-specs">
+        <h4>Technical Specifications</h4>
+        <ul>${p.specs.split(';').map(s=>'<li>'+s.trim()+'</li>').join('')}</ul>
+      </div>
+      <div class="modal-actions">
+        <a class="btn btn-primary" href="${p.url}" target="_blank">View on router-switch.com &rarr;</a>
+        <button class="btn btn-outline" onclick="toggleCompare('${p.partNumber}');closeModal()">
+          ${inCompare?'Remove from Compare':'Add to Compare'}
+        </button>
+      </div>
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function closeModal(){document.getElementById('modalOverlay').classList.remove('show')}
+
+function toggleCompare(pn){
+  const idx=compareList.findIndex(c=>c.partNumber===pn);
+  if(idx>-1){compareList.splice(idx,1)}
+  else if(compareList.length<4){
+    const p=products.find(x=>x.partNumber===pn);
+    if(p)compareList.push(p);
+  }
+  updateCompareBar();
+}
+
+function updateCompareBar(){
+  const bar=document.getElementById('compareBar');
+  const items=document.getElementById('compareItems');
+  const hint=document.getElementById('compareHint');
+  if(compareList.length){
+    bar.classList.add('show');
+    hint.style.display='inline';
+    items.innerHTML=compareList.map(p=>`
+      <span class="compare-chip">${p.partNumber}<button onclick="toggleCompare('${p.partNumber}')">&times;</button></span>
+    `).join('');
+  } else {
+    bar.classList.remove('show');
+    hint.style.display='none';
+  }
+}
+
+function clearCompare(){compareList=[];updateCompareBar()}
+
+function showCompare(){
+  if(compareList.length<2)return alert('Select at least 2 products to compare');
+  const fields=[
+    ['Series','series'],['Category','category'],['Description','description'],
+    ['Specs','specs'],['Form Factor','formFactor'],['Pricing','pricing'],
+    ['Compatibility','compatibility']
+  ];
+  let html=`
+    <div class="modal-header"><h2>Product Comparison</h2><button class="modal-close" onclick="document.getElementById('compareOverlay').classList.remove('show')">&times;</button></div>
+    <div style="padding:0 24px 24px;overflow-x:auto">
+    <table class="compare-table">
+      <thead><tr><th></th>${compareList.map(p=>'<th>'+p.partNumber+'</th>').join('')}</tr></thead>
+      <tbody>
+        <tr><td class="row-label">Image</td>${compareList.map(p=>'<td><img src="'+p.image+'" style="max-height:80px" onerror="this.style.display=\'none\'"></td>').join('')}</tr>
+        ${fields.map(([label,key])=>'<tr><td class="row-label">'+label+'</td>'+compareList.map(p=>'<td>'+p[key]+'</td>').join('')+'</tr>').join('')}
+        <tr><td class="row-label">Link</td>${compareList.map(p=>'<td><a href="'+p.url+'" target="_blank" class="td-link">View Product</a></td>').join('')}</tr>
+      </tbody>
+    </table></div>
+  `;
+  document.getElementById('compareModal').innerHTML=html;
+  document.getElementById('compareOverlay').classList.add('show');
+}
+
+document.getElementById('search').addEventListener('input',applyFilters);
+document.getElementById('seriesFilter').addEventListener('change',function(){
+  document.querySelectorAll('.pill').forEach(p=>{
+    p.classList.toggle('active',p.dataset.series===this.value||(this.value===''&&p.dataset.series===''));
+  });
+  applyFilters();
+});
+document.getElementById('categoryFilter').addEventListener('change',applyFilters);
+document.getElementById('sortBy').addEventListener('change',applyFilters);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();document.getElementById('compareOverlay').classList.remove('show')}});
+</script>
+
+</body>
+</html>

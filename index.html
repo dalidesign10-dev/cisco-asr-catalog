@@ -360,40 +360,41 @@ function applyFilters(){
 function renderGrid(){
   const el=document.getElementById('gridView');
   if(!filtered.length){el.innerHTML='';return;}
-  el.innerHTML=filtered.map((p,i)=>`
-    <div class="card" onclick="openModal(${i})" data-pn="${p.partNumber}">
-      <div class="card-img">
-        <span class="series-badge ${badgeClass[p.series]||''}">${p.series}</span>
-        <img src="${p.image}" alt="${p.partNumber}" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22><rect fill=%22%23f0f4f8%22 width=%22120%22 height=%22120%22/><text x=%2260%22 y=%2265%22 text-anchor=%22middle%22 fill=%22%23aaa%22 font-size=%2212%22>${p.partNumber}</text></svg>'">
-      </div>
-      <div class="card-body">
-        <div class="card-pn">${p.partNumber} <span class="card-cat">${p.category}</span></div>
-        <div class="card-desc">${p.description}</div>
-        <div class="card-specs">${p.specs.split(';').slice(0,3).map(s=>'<span class="spec-tag">'+s.trim()+'</span>').join('')}</div>
-      </div>
-      <div class="card-footer">
-        <span class="card-price">${p.pricing}</span>
-        <a class="card-link" href="${p.url}" target="_blank" onclick="event.stopPropagation()">View on router-switch.com &rarr;</a>
-      </div>
-    </div>
-  `).join('');
+  el.innerHTML=filtered.map((p,i)=>{
+    const pn=p.partNumber.replace(/[^a-zA-Z0-9\-]/g,'_');
+    const specTags=p.specs.split(';').slice(0,3).map(s=>'<span class="spec-tag">'+s.trim()+'</span>').join('');
+    return '<div class="card" onclick="openModal('+i+')" data-pn="'+pn+'">'
+      +'<div class="card-img">'
+      +'<span class="series-badge '+(badgeClass[p.series]||'')+'">'+p.series+'</span>'
+      +'<img src="'+p.image+'" alt="'+pn+'" loading="lazy" onerror="this.onerror=null;this.style.display=\'none\'">'
+      +'</div>'
+      +'<div class="card-body">'
+      +'<div class="card-pn">'+p.partNumber+' <span class="card-cat">'+p.category+'</span></div>'
+      +'<div class="card-desc">'+p.description+'</div>'
+      +'<div class="card-specs">'+specTags+'</div>'
+      +'</div>'
+      +'<div class="card-footer">'
+      +'<span class="card-price">'+p.pricing+'</span>'
+      +'<a class="card-link" href="'+p.url+'" target="_blank" onclick="event.stopPropagation()">View on router-switch.com &rarr;</a>'
+      +'</div></div>';
+  }).join('');
 }
 
 function renderTable(){
   const el=document.getElementById('tableBody');
-  el.innerHTML=filtered.map((p,i)=>`
-    <tr onclick="openModal(${i})" style="cursor:pointer">
-      <td><img src="${p.image}" alt="${p.partNumber}" onerror="this.style.display='none'"></td>
-      <td class="td-pn">${p.partNumber}</td>
-      <td>${p.series}</td>
-      <td>${p.category}</td>
-      <td>${p.description}</td>
-      <td style="font-size:.82rem">${p.specs}</td>
-      <td>${p.formFactor}</td>
-      <td style="color:#27ae60;font-weight:600">${p.pricing}</td>
-      <td><a class="td-link" href="${p.url}" target="_blank" onclick="event.stopPropagation()">View</a></td>
-    </tr>
-  `).join('');
+  el.innerHTML=filtered.map(function(p,i){
+    return '<tr onclick="openModal('+i+')" style="cursor:pointer">'
+      +'<td><img src="'+p.image+'" alt="'+p.partNumber.replace(/"/g,'')+'" onerror="this.onerror=null;this.style.display=\'none\'"></td>'
+      +'<td class="td-pn">'+p.partNumber+'</td>'
+      +'<td>'+p.series+'</td>'
+      +'<td>'+p.category+'</td>'
+      +'<td>'+p.description+'</td>'
+      +'<td style="font-size:.82rem">'+p.specs+'</td>'
+      +'<td>'+p.formFactor+'</td>'
+      +'<td style="color:#27ae60;font-weight:600">'+p.pricing+'</td>'
+      +'<td><a class="td-link" href="'+p.url+'" target="_blank" onclick="event.stopPropagation()">View</a></td>'
+      +'</tr>';
+  }).join('');
 }
 
 function setView(v){
@@ -407,35 +408,28 @@ function setView(v){
 function openModal(idx){
   const p=filtered[idx];
   const inCompare=compareList.some(c=>c.partNumber===p.partNumber);
-  document.getElementById('modal').innerHTML=`
-    <div class="modal-header">
-      <div>
-        <h2>${p.partNumber}</h2>
-        <span class="modal-series">${p.series} &mdash; ${p.category}</span>
-      </div>
-      <button class="modal-close" onclick="closeModal()">&times;</button>
-    </div>
-    <div class="modal-img"><img src="${p.image}" alt="${p.partNumber}" onerror="this.parentElement.innerHTML='<div style=padding:40px;color:#aaa>No image available</div>'"></div>
-    <div class="modal-body">
-      <p style="color:#555;line-height:1.5;margin-bottom:12px">${p.description}</p>
-      <div class="detail-grid">
-        <div class="detail-item"><label>Form Factor</label><span>${p.formFactor}</span></div>
-        <div class="detail-item"><label>Pricing</label><span style="color:#27ae60">${p.pricing}</span></div>
-        <div class="detail-item"><label>Compatibility</label><span>${p.compatibility}</span></div>
-        <div class="detail-item"><label>Series</label><span>${p.series}</span></div>
-      </div>
-      <div class="modal-specs">
-        <h4>Technical Specifications</h4>
-        <ul>${p.specs.split(';').map(s=>'<li>'+s.trim()+'</li>').join('')}</ul>
-      </div>
-      <div class="modal-actions">
-        <a class="btn btn-primary" href="${p.url}" target="_blank">View on router-switch.com &rarr;</a>
-        <button class="btn btn-outline" onclick="toggleCompare('${p.partNumber}');closeModal()">
-          ${inCompare?'Remove from Compare':'Add to Compare'}
-        </button>
-      </div>
-    </div>
-  `;
+  var specsList=p.specs.split(';').map(function(s){return '<li>'+s.trim()+'</li>';}).join('');
+  var safePn=p.partNumber.replace(/'/g,"\\'");
+  document.getElementById('modal').innerHTML=
+    '<div class="modal-header"><div>'
+    +'<h2>'+p.partNumber+'</h2>'
+    +'<span class="modal-series">'+p.series+' &mdash; '+p.category+'</span>'
+    +'</div><button class="modal-close" onclick="closeModal()">&times;</button></div>'
+    +'<div class="modal-img"><img src="'+p.image+'" alt="'+p.partNumber.replace(/"/g,'')+'" onerror="this.onerror=null;this.parentElement.innerHTML=\'<div style=padding:40px;color:#aaa>No image</div>\'"></div>'
+    +'<div class="modal-body">'
+    +'<p style="color:#555;line-height:1.5;margin-bottom:12px">'+p.description+'</p>'
+    +'<div class="detail-grid">'
+    +'<div class="detail-item"><label>Form Factor</label><span>'+p.formFactor+'</span></div>'
+    +'<div class="detail-item"><label>Pricing</label><span style="color:#27ae60">'+p.pricing+'</span></div>'
+    +'<div class="detail-item"><label>Compatibility</label><span>'+p.compatibility+'</span></div>'
+    +'<div class="detail-item"><label>Series</label><span>'+p.series+'</span></div>'
+    +'</div>'
+    +'<div class="modal-specs"><h4>Technical Specifications</h4><ul>'+specsList+'</ul></div>'
+    +'<div class="modal-actions">'
+    +'<a class="btn btn-primary" href="'+p.url+'" target="_blank">View on router-switch.com &rarr;</a>'
+    +'<button class="btn btn-outline" onclick="toggleCompare(\''+safePn+'\');closeModal()">'
+    +(inCompare?'Remove from Compare':'Add to Compare')
+    +'</button></div></div>';
   document.getElementById('modalOverlay').classList.add('show');
 }
 
@@ -458,9 +452,7 @@ function updateCompareBar(){
   if(compareList.length){
     bar.classList.add('show');
     hint.style.display='inline';
-    items.innerHTML=compareList.map(p=>`
-      <span class="compare-chip">${p.partNumber}<button onclick="toggleCompare('${p.partNumber}')">&times;</button></span>
-    `).join('');
+    items.innerHTML=compareList.map(function(p){var s=p.partNumber.replace(/'/g,"\\'");return '<span class="compare-chip">'+p.partNumber+'<button onclick="toggleCompare(\''+s+'\')">&times;</button></span>';}).join('');
   } else {
     bar.classList.remove('show');
     hint.style.display='none';
@@ -476,18 +468,17 @@ function showCompare(){
     ['Specs','specs'],['Form Factor','formFactor'],['Pricing','pricing'],
     ['Compatibility','compatibility']
   ];
-  let html=`
-    <div class="modal-header"><h2>Product Comparison</h2><button class="modal-close" onclick="document.getElementById('compareOverlay').classList.remove('show')">&times;</button></div>
-    <div style="padding:0 24px 24px;overflow-x:auto">
-    <table class="compare-table">
-      <thead><tr><th></th>${compareList.map(p=>'<th>'+p.partNumber+'</th>').join('')}</tr></thead>
-      <tbody>
-        <tr><td class="row-label">Image</td>${compareList.map(p=>'<td><img src="'+p.image+'" style="max-height:80px" onerror="this.style.display=\'none\'"></td>').join('')}</tr>
-        ${fields.map(([label,key])=>'<tr><td class="row-label">'+label+'</td>'+compareList.map(p=>'<td>'+p[key]+'</td>').join('')+'</tr>').join('')}
-        <tr><td class="row-label">Link</td>${compareList.map(p=>'<td><a href="'+p.url+'" target="_blank" class="td-link">View Product</a></td>').join('')}</tr>
-      </tbody>
-    </table></div>
-  `;
+  var ths=compareList.map(function(p){return '<th>'+p.partNumber+'</th>';}).join('');
+  var imgs=compareList.map(function(p){return '<td><img src="'+p.image+'" style="max-height:80px" onerror="this.onerror=null;this.style.display=\'none\'"></td>';}).join('');
+  var fieldRows=fields.map(function(f){return '<tr><td class="row-label">'+f[0]+'</td>'+compareList.map(function(p){return '<td>'+p[f[1]]+'</td>';}).join('')+'</tr>';}).join('');
+  var links=compareList.map(function(p){return '<td><a href="'+p.url+'" target="_blank" class="td-link">View Product</a></td>';}).join('');
+  var html='<div class="modal-header"><h2>Product Comparison</h2><button class="modal-close" onclick="document.getElementById(\'compareOverlay\').classList.remove(\'show\')">&times;</button></div>'
+    +'<div style="padding:0 24px 24px;overflow-x:auto">'
+    +'<table class="compare-table"><thead><tr><th></th>'+ths+'</tr></thead><tbody>'
+    +'<tr><td class="row-label">Image</td>'+imgs+'</tr>'
+    +fieldRows
+    +'<tr><td class="row-label">Link</td>'+links+'</tr>'
+    +'</tbody></table></div>';
   document.getElementById('compareModal').innerHTML=html;
   document.getElementById('compareOverlay').classList.add('show');
 }
